@@ -171,21 +171,21 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 		splitImageSize.width = imageSizeWithout9GridInfo.width;
 		splitImageSize.heigh = nineGridInfo.Top;
 		splitImageSize.dataSize = bufferSizeIn3H.at(0);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".top.png", bufferIn3H.at(0), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".top.png", bufferIn3H.at(0), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 		
 		splitImageSize.width = imageSizeWithout9GridInfo.width;
 		splitImageSize.heigh = imageSizeWithout9GridInfo.heigh - nineGridInfo.Top - nineGridInfo.Bottom;
 		splitImageSize.dataSize = bufferSizeIn3H.at(1);
 
-		string fileName = this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle.png";
+		string fileName = this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".middle.png";
 		isSuccess = this->_pimpl->SaveRawBufToPngFormat( fileName, bufferIn3H.at(1), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 		
 		splitImageSize.width = imageSizeWithout9GridInfo.width;
 		splitImageSize.heigh = nineGridInfo.Bottom;
 		splitImageSize.dataSize = bufferSizeIn3H.at(2);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".bottom.png", bufferIn3H.at(2), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".bottom.png", bufferIn3H.at(2), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 		
 
@@ -258,21 +258,21 @@ bool NinegridCalculator::RunSplitImageWith3V(){
 		splitImageSize.width = nineGridInfo.Left;
 		splitImageSize.heigh = imageSizeWithout9GridInfo.heigh;
 		splitImageSize.dataSize = bufferSizeIn3V.at(0);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".left.png", bufferIn3V.at(0), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".left.png", bufferIn3V.at(0), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = imageSizeWithout9GridInfo.width - nineGridInfo.Left - nineGridInfo.Rright;
 		splitImageSize.heigh = imageSizeWithout9GridInfo.heigh;
 		splitImageSize.dataSize = bufferSizeIn3V.at(1);
 
-		string fileName = this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle.png";
+		string fileName = this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".middle.png";
 		isSuccess = this->_pimpl->SaveRawBufToPngFormat( fileName, bufferIn3V.at(1), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = nineGridInfo.Rright;
 		splitImageSize.heigh = imageSizeWithout9GridInfo.heigh;
 		splitImageSize.dataSize = bufferSizeIn3V.at(2);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".right.png", bufferIn3V.at(2), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".right.png", bufferIn3V.at(2), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 
@@ -356,55 +356,55 @@ bool NinegridCalculator::RunSplitImageWith9Grid(){
 		splitImageSize.width = left_width;
 		splitImageSize.heigh = top_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(0);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".left-top.png", bufferIn9Grid.at(0), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".left-top.png", bufferIn9Grid.at(0), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = mid_width;
 		splitImageSize.heigh = top_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(1);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle-top.png", bufferIn9Grid.at(1), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".middle-top.png", bufferIn9Grid.at(1), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = right_width;
 		splitImageSize.heigh = top_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(2);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".right-top.png", bufferIn9Grid.at(2), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".right-top.png", bufferIn9Grid.at(2), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = left_width;
 		splitImageSize.heigh = mid_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(3);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle-left.png", bufferIn9Grid.at(3), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".middle-left.png", bufferIn9Grid.at(3), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = mid_width;
 		splitImageSize.heigh = mid_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(4);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle-middle.png", bufferIn9Grid.at(4), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".middle-middle.png", bufferIn9Grid.at(4), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = right_width;
 		splitImageSize.heigh = mid_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(5);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle-right.png", bufferIn9Grid.at(5), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".middle-right.png", bufferIn9Grid.at(5), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = left_width;
 		splitImageSize.heigh = bottom_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(6);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".bottom-left.png", bufferIn9Grid.at(6), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".bottom-left.png", bufferIn9Grid.at(6), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = mid_width;
 		splitImageSize.heigh = bottom_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(7);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".bottom-middle.png", bufferIn9Grid.at(7), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".bottom-middle.png", bufferIn9Grid.at(7), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = right_width;
 		splitImageSize.heigh = bottom_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(8);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".bottom-right.png", bufferIn9Grid.at(8), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".bottom-right.png", bufferIn9Grid.at(8), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 
