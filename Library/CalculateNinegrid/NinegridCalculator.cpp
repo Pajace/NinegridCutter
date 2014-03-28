@@ -121,7 +121,11 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 	}
 
 	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
-	ofstream outputText( outputFolder + "\\Split3HImage.log", ios::out);
+	string outputFolderFile(outputFolder.c_str());
+	outputFolderFile.append(FOLDER_SEPARATOR);
+	outputFolderFile.append("Split3HImage.log");
+
+	ofstream outputText( outputFolderFile.c_str(), ios::out);
 	if (outputText.is_open() == false){		
 		return false;
 	}
@@ -203,7 +207,11 @@ bool NinegridCalculator::RunSplitImageWith3V(){
 	}
 
 	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
-	ofstream outputText( outputFolder + "\\Split3VImage.log", ios::out);
+	string outputFolderFile(outputFolder.c_str());
+	outputFolderFile.append(FOLDER_SEPARATOR);
+	outputFolderFile.append("Split3VImage.log");
+
+	ofstream outputText( outputFolderFile.c_str(), ios::out);
 	if (outputText.is_open() == false){		
 		return false;
 	}
@@ -286,7 +294,11 @@ bool NinegridCalculator::RunSplitImageWith9Grid(){
 	}
 
 	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
-	ofstream outputText( outputFolder + "\\Split9GridImage.log", ios::out);
+
+	string outputFolderFile(outputFolder.c_str());
+	outputFolderFile.append(FOLDER_SEPARATOR);
+	outputFolderFile.append("Split9GridImage.log");
+	ofstream outputText( outputFolderFile.c_str(), ios::out);
 	if (outputText.is_open() == false){		
 		return false;
 	}
