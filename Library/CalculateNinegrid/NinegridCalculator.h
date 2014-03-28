@@ -16,8 +16,8 @@ namespace hTC { namespace Image { namespace Ninegrid {
 		~NinegridCalculator(void);
 
 		bool RunCalculaterAndOutpuInfo();
-		bool RunSplitImageWith3H();
 		bool RunSplitImageWith3V();
+		bool RunSplitImageWith3H();
 		bool RunSplitImageWith9Grid();
 
 	private:

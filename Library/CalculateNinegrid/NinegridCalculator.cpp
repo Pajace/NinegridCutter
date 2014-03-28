@@ -101,8 +101,7 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 		this->_pimpl->CalculateNineGridInfo(imageRawBuffer, imageSize, nineGridInfo);
 		this->_pimpl->CalculateImageSizeWithoutNineGridInfo(imageSize, imageSizeWithout9GridInfo);
 
-		this->_pimpl->SaveImageWithout9GridInfo(this->getSecondayBaseFileName(outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".trim.png",  imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
-		//this->_pimpl->SaveImageWithout9GridInfo(this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".trim.png", imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
+		this->_pimpl->SaveImageWithout9GridInfo(this->getSecondayBaseFileName(outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".png",  imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
 
 		outputText << pngFileList.at(index) << endl;
 		outputText << "--------------------------------------" << endl;
@@ -121,8 +120,8 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 	return true;
 }
 
-bool NinegridCalculator::RunSplitImageWith3H(){
-	string outputFolder("output-3H");
+bool NinegridCalculator::RunSplitImageWith3V(){
+	string outputFolder("output-3V");
 
 	bool isCreated = createFolder(outputFolder);
 	if (isCreated==false){
@@ -209,8 +208,8 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 	return true;
 }
 
-bool NinegridCalculator::RunSplitImageWith3V(){
-	string outputFolder("output-3V");
+bool NinegridCalculator::RunSplitImageWith3H(){
+	string outputFolder("output-3H");
 	
 	bool isCreated = createFolder(outputFolder);
 	if (isCreated==false){
