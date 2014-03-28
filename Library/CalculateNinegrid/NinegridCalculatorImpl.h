@@ -10,7 +10,7 @@ namespace hTC { namespace Image { namespace Ninegrid {
 	class NinegridCalculatorImpl
 	{
 	public:
-		NinegridCalculatorImpl(void);
+		NinegridCalculatorImpl();
 		~NinegridCalculatorImpl(void);
 
 		// Get PNG raw buffer image
@@ -19,7 +19,7 @@ namespace hTC { namespace Image { namespace Ninegrid {
 		// @imgRawBuf: (out parameter) the raw buffer of PNG image
 		// @pngRawBufImageSize: (out parameter) the image size of PNG image
 		// Return true: success otherwise fail
-		bool GetPngRawBuffer(const std::string& filename, __out BYTE **imgRawBuf, __out ImageSize &pngRawBufImgSize);
+		bool GetPngRawBuffer(const std::string& filename,  BYTE **imgRawBuf,  ImageSize &pngRawBufImgSize);
 
 		// Get NineGridInfo
 		// -------------------
@@ -27,9 +27,10 @@ namespace hTC { namespace Image { namespace Ninegrid {
 		// @imgRawBufSize: thw raw buffer size of imgRawBuf
 		// @nineGridInfo: (out parameter) the result Nine grid information
 		// return true if get info success otherwis is fail
-		bool CalculateNineGridInfo(BYTE *imgRawBuf, ImageSize &imgRawBufSize, __out NineGridInfo &nineGridInfo);
+		bool CalculateNineGridInfo(BYTE *imgRawBuf, ImageSize &imgRawBufSize,  NineGridInfo &nineGridInfo);
 
-		bool CalculateImageSizeWithoutNineGridInfo(ImageSize srcImgRawBufSize,  __out ImageSize &newImgBufSize);
+		// @newImgBufSize : (out parameter)
+		bool CalculateImageSizeWithoutNineGridInfo(ImageSize srcImgRawBufSize,  ImageSize &newImgBufSize);
 
 		bool SaveImageWithout9GridInfo(const std::string& fileName, BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize, ImageSize newImgRawBufSizeWithout9GridInfo);
 		bool Trim9GridInfo(BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize, ImageSize newImgRawBufSizeWithout9GridInfo, __out BYTE **newImageBufferWithout9GridInfo);
@@ -50,14 +51,17 @@ namespace hTC { namespace Image { namespace Ninegrid {
 
 		std::string GetBaseFileName(std::string fileName);
 
+		bool has_suffix(const std::string& s, const std::string& suffix);
 	private:
 		//BYTE* baseImg;
 		//ImageSize baseImageSize;
 		//NineGridInfo ninegrid;
 
 		void* allocMemory(size_t size);
+#ifdef WIN32
 		static std::wstring StringToWideString(const std::string& as);
-		static std::string WideStringToString(const std::wstring& wideString);		
+		static std::string WideStringToString(const std::wstring& wideString);
+#endif
 		int GetFileList(std::string searchkey, std::vector<std::string> &list);
 	};
 

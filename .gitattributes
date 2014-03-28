@@ -8,7 +8,6 @@ Application/Main/resource.h -text
 Library/CalculateNinegrid/CalculateNinegrid.vcxproj -text
 Library/CalculateNinegrid/CalculateNinegrid.vcxproj.filters -text
 Library/CalculateNinegrid/CalculateNinegrid.vcxproj.user -text
-Library/CalculateNinegrid/Common.cpp -text
 Library/CalculateNinegrid/Common.h -text
 Library/CalculateNinegrid/NinegridCalculator.cpp -text
 Library/CalculateNinegrid/NinegridCalculator.h -text

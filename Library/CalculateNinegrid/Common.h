@@ -1,11 +1,10 @@
 #ifndef HTC_IMAGE_NINEGRID_COMMON_H_
 #define HTC_IMAGE_NINEGRID_COMMON_H_
 
-#define WINDOWS
-
-#ifdef WINDOWS
-#include <Windows.h>
+#ifdef WIN32
+	#include <Windows.h>
 #else
+	typedef unsigned char BYTE;
 #endif
 
 namespace hTC { namespace Image { namespace Ninegrid {

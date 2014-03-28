@@ -1,6 +1,14 @@
 #include "NinegridCalculatorImpl.h"
 #include "PNGCodec.h"
-#include <Windows.h>
+#ifdef WIN32
+	#include <Windows.h>
+#else
+	#include <sys/types.h>
+	#include <dirent.h>
+	#include <unistd.h>
+	#define getCurrentDir getcwd
+#endif
+#include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <new>
@@ -10,13 +18,14 @@ using namespace hTC::Image::Ninegrid;
 using namespace std;
 using namespace hTC::ComposerLib;
 
-NinegridCalculatorImpl::NinegridCalculatorImpl(void){}
+NinegridCalculatorImpl::NinegridCalculatorImpl(){
+}
 
 
 NinegridCalculatorImpl::~NinegridCalculatorImpl(void){}
 
-
-bool NinegridCalculatorImpl::GetPngRawBuffer(const std::string& fileName, __out BYTE **imgRawBuf, __out ImageSize &pngRawBufImgSize){
+//  __out BYTE **imgRawBuf, __out ImageSize &pngRawBufImgSize
+bool NinegridCalculatorImpl::GetPngRawBuffer(const std::string& fileName, BYTE **imgRawBuf, ImageSize &pngRawBufImgSize){
 	PNGBuffer destBuffer;
 	PNGCodec  pngcodec;
 	unsigned long width = 0;
@@ -45,12 +54,16 @@ bool NinegridCalculatorImpl::GetPngRawBuffer(const std::string& fileName, __out 
 		return false;
 	}
 
+#ifdef WIN32
 	errno_t memCpyResult = memcpy_s(*imgRawBuf, destBuffer.size(), destBuffer.toPNGBytes(), destBuffer.size());
 	if (memCpyResult!=0) {
 		cerr <<"[GetPngRawBuffer](%d) memcpy_s failed." << endl;
 		destBuffer.unwrap();
 		return false;
 	}
+#else
+	memcpy(*imgRawBuf, destBuffer.toPNGBytes(), destBuffer.size());
+#endif
 
 	pngRawBufImgSize.width = width;
 	pngRawBufImgSize.heigh = height;
@@ -59,8 +72,8 @@ bool NinegridCalculatorImpl::GetPngRawBuffer(const std::string& fileName, __out 
 
 	return true;
 }
-
-bool NinegridCalculatorImpl::CalculateNineGridInfo(BYTE *imgRawBuf, ImageSize &imgRawBufSize, __out NineGridInfo &nineGridInfo){
+// __out NineGridInfo &nineGridInfo
+bool NinegridCalculatorImpl::CalculateNineGridInfo(BYTE *imgRawBuf, ImageSize &imgRawBufSize, NineGridInfo &nineGridInfo){
 	const char NINEGRID_BLACK_LINE[] = { 0x00, 0x00, 0x00, 0xff};
 	const size_t BGRA_BYTE = 4;
 
@@ -124,6 +137,7 @@ bool NinegridCalculatorImpl::CalculateNineGridInfo(BYTE *imgRawBuf, ImageSize &i
 	return true;
 }
 
+// __out ImageSize &newImgBufSize
 bool NinegridCalculatorImpl::CalculateImageSizeWithoutNineGridInfo(ImageSize srcImgRawBufSize,  __out ImageSize &newImgBufSize) {
 	const size_t BGRA_BYTE = 4;
 
@@ -183,7 +197,7 @@ bool NinegridCalculatorImpl::SaveImageWithout9GridInfo(const string& fileName, B
 	}
 
 	// -----------------------------------
-	ofstream outfile(fileName, ios::binary);
+	ofstream outfile(fileName.c_str(), ios::binary);
 	bool result = false;
 	if (outfile.is_open()) {
 		PNGBuffer srcPNGRawBuffer;
@@ -248,7 +262,7 @@ string NinegridCalculatorImpl::GetBaseFileName(string fileName) {
 vector<string> NinegridCalculatorImpl::GetPngFileListAtFolder(const std::string &searchKey){
 	vector<string> result;
 
-	int size = GetFileList(searchKey, result);
+	GetFileList(searchKey, result);
 
 	return result;
 }
@@ -452,6 +466,7 @@ void* NinegridCalculatorImpl::allocMemory(size_t size){
 	return NULL;
 }
 
+#ifdef WIN32
 wstring NinegridCalculatorImpl::StringToWideString(const string& as) {
 	if( as.empty() )   
 		return std::wstring();
@@ -468,10 +483,19 @@ string NinegridCalculatorImpl::WideStringToString(const std::wstring& wideString
 		return std::string("");
 	return std::string(buffer);
 }
+#endif
+
+
+bool NinegridCalculatorImpl::has_suffix(const string& s, const string& suffix) {
+	return ( s.size() >= suffix.size() ) && equal(suffix.rbegin(), suffix.rend(), s.rbegin());
+}
+
 
 int NinegridCalculatorImpl::GetFileList(string searchkey, std::vector<std::string> &list) {
 	vector<string> result;
 
+
+#ifdef WIN32
 	WIN32_FIND_DATA fd;
 	HANDLE h = FindFirstFile(StringToWideString(searchkey).c_str(), &fd);
 
@@ -483,5 +507,19 @@ int NinegridCalculatorImpl::GetFileList(string searchkey, std::vector<std::strin
 		if(FindNextFile(h, &fd) == FALSE)
 			break;
 	}
+#else
+	char cCurrentPath[FILENAME_MAX];
+	getCurrentDir(cCurrentPath, sizeof(cCurrentPath));
+
+	DIR *dir = opendir(cCurrentPath);
+	if(!dir){ return 1;}
+	dirent *entry;
+	while(entry = readdir(dir)) {
+		if ( has_suffix(entry->d_name, ".png")){
+			cout << "   " <<  entry->d_name << endl;
+			list.push_back(string(entry->d_name));
+		}
+	}
+#endif
 	return list.size();
 }

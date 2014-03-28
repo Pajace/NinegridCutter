@@ -2,20 +2,23 @@
 #include "NinegridCalculatorImpl.h"
 #include <vector>
 #include <fstream>
+#include <iostream>
 
-#ifdef WINDOWS
-#include <direct.h>
-#include <Windows.h>
-#define GetCurrentDir _getcwd
+#ifdef WIN32
+	#include <direct.h>
+	#include <Windows.h>
+	#define GetCurrentDir _getcwd
 #else
-#include <unistd.h>
-#define GetCurrentDir getcwd
+	#include <unistd.h>
+	#define GetCurrentDir getcwd
+	#include <sys/stat.h>
+	#include <sys/types.h>
 #endif
 
 using namespace hTC::Image::Ninegrid;
 using namespace std;
 
-NinegridCalculator::NinegridCalculator(void):_pimpl(new NinegridCalculatorImpl()){}
+NinegridCalculator::NinegridCalculator() : _pimpl(new NinegridCalculatorImpl()) {}
 
 
 NinegridCalculator::~NinegridCalculator(void){
@@ -24,12 +27,33 @@ NinegridCalculator::~NinegridCalculator(void){
 
 bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 	string outputFolder("output");
+#ifdef WIN32
 	_mkdir(outputFolder.c_str());
+#else
+	int isCreated = mkdir(outputFolder.c_str(), S_IRWXO | S_IRWXG | S_IRWXU);
+	cout << "Create folder [" << outputFolder << "]...  " ;
+	if (isCreated== 0) cout << " [Success]" << endl;
+	else cout << " [Failed]" << endl;
+#endif
 
+	cout << "Scan PNG images...." << endl;
+	cout << "  ===================================================== " << endl;
 	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
-	ofstream outputText( outputFolder + "\\PNGImageInformation.txt", ios::out);
-	if (outputText.is_open() == false){		
+	cout << "  ===================================================== [Finish]" << endl;
+
+	string outputTextFile = string(outputFolder);
+#ifdef WIN32
+	outputTextFile.append("\\PNGImageInformation.txt");
+#else
+	outputTextFile.append("/PNGImageInformation.txt");
+#endif
+	ofstream outputText( outputTextFile.c_str(), ios::out);
+
+	if (outputText.is_open() == false){
+		std::cerr << "Can not open output/PNGImageInformation.txt" << endl;
 		return false;
+	} else{
+		cout << "Create output file: output/PNGImageInformation.txt";
 	}
 
 	if (pngFileList.size() == 0){
@@ -53,8 +77,11 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 
 		this->_pimpl->CalculateNineGridInfo(imageRawBuffer, imageSize, nineGridInfo);
 		this->_pimpl->CalculateImageSizeWithoutNineGridInfo(imageSize, imageSizeWithout9GridInfo);
+#ifdef WIN32
 		this->_pimpl->SaveImageWithout9GridInfo(this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".trim.png", imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
-
+#else
+		this->_pimpl->SaveImageWithout9GridInfo(this->_pimpl->GetBaseFileName( outputFolder + "/" + pngFileList.at(index))+".trim.png", imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
+#endif
 		outputText << pngFileList.at(index) << endl;
 		outputText << "--------------------------------------" << endl;
 		outputText << "NineGrid=\"left,top,right,bottom\" => NineGrid=\"" << //NineGrid="left,top,right,bottom"
@@ -68,8 +95,8 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 		outputText << "--------------------------------------" << endl << endl;
 
 	}
-
-
+	
+	return true;
 }
 
 bool NinegridCalculator::RunSplitImageWith3H(){
@@ -145,8 +172,10 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 			delete [] bufferIn3H.at(i);
 		delete [] imageRawBuffer;
 	}
-
+	
+	return true;
 }
+
 bool NinegridCalculator::RunSplitImageWith3V(){
 	string outputFolder("output-3V");
 	_mkdir(outputFolder.c_str());
@@ -222,7 +251,9 @@ bool NinegridCalculator::RunSplitImageWith3V(){
 		delete [] imageRawBuffer;
 	}
 
+	return true;
 }
+
 bool NinegridCalculator::RunSplitImageWith9Grid(){
 	string outputFolder("output-9Grid");
 	_mkdir(outputFolder.c_str());
@@ -343,4 +374,5 @@ bool NinegridCalculator::RunSplitImageWith9Grid(){
 		delete [] imageRawBuffer;
 	}
 
+	return true;
 }

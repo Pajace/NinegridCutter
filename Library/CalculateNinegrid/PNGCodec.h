@@ -23,21 +23,21 @@ namespace hTC {
 
 			// input RGBA buffer & get PNG stream buffer
 			const ENCODE_ERROR_NO encode(
-				__out PNGBuffer &dest_buffer,
-				__in  const PNGBuffer &src_buffer,
-				__in  const png_uint_32 width,
-				__in  const png_uint_32 height
+				PNGBuffer &dest_buffer,
+				  const PNGBuffer &src_buffer,
+				  const png_uint_32 width,
+				  const png_uint_32 height
 				) const;
 
 			// read PNG file & get RGBA buffer
 			const ENCODE_ERROR_NO readPNGFromPath(
-				__out PNGBuffer &dest_buffer,
-				__out png_uint_32 &width,
-				__out png_uint_32 &height,
-				__in const char *path
+				PNGBuffer &dest_buffer,
+				png_uint_32 &width,
+				png_uint_32 &height,
+				 const char *path
 				) const;
 
-			const bool writePNGToPath(__in const char *path) const;
+			const bool writePNGToPath( const char *path) const;
 
 		private:
 			static void appendPNGBuffer(png_structp png_ptr, png_bytep data, png_size_t length);

@@ -15,25 +15,33 @@ namespace hTC {
 		PNGCodec::~PNGCodec(void) {
 		}
 
-#pragma region Public Members
+//#pragma region Public Members
 
 		const PNGCodec::ENCODE_ERROR_NO PNGCodec::encode(
-			__out PNGBuffer &dest_buffer,
-			__in  const PNGBuffer &src_buffer,
-			__in  const png_uint_32 width,
-			__in  const png_uint_32 height
+			 PNGBuffer &dest_buffer,
+			  const PNGBuffer &src_buffer,
+			  const png_uint_32 width,
+			  const png_uint_32 height
 			) const {
 				png_structp png_ptr = png_create_write_struct(
 					PNG_LIBPNG_VER_STRING,
 					NULL, NULL, NULL
 					);
-
+#ifdef WIN32
 				if (NULL == png_ptr) return ENCODE_ERROR_NO::FAILED_TO_CREATE_PNG_STRUCTURE;
+#else
+				if (NULL == png_ptr) return FAILED_TO_CREATE_PNG_STRUCTURE;
+#endif
 				png_infop info_ptr = png_create_info_struct(png_ptr);
 
 				if (NULL == info_ptr) {
 					png_destroy_write_struct(&png_ptr, NULL);
+#ifdef WIN32
 					return ENCODE_ERROR_NO::FAILED_TO_CREATE_PNG_INFO_STRUCTURE;
+#else
+					return FAILED_TO_CREATE_PNG_INFO_STRUCTURE;
+#endif
+
 				}
 				png_set_write_fn(
 					png_ptr,
@@ -51,11 +59,16 @@ namespace hTC {
 				png_write_info(png_ptr, info_ptr);
 				png_bytepp imgRows = new png_bytep[height];
 				if (imgRows==NULL) {
+#ifdef WIN32
 					return ENCODE_ERROR_NO::FAILED_TO_ALLOCAT_MEMORY;
+#else
+					return FAILED_TO_ALLOCAT_MEMORY;
+#endif
+
 				}
 
 				for (png_uint_32 i = 0; i < height; ++ i) {
-					imgRows[i] = src_buffer.toPNGBytes() + 4 * (width * i) * sizeof png_byte;
+					imgRows[i] = src_buffer.toPNGBytes() + 4 * (width * i) * sizeof(png_byte);
 				}
 				png_write_image(png_ptr, imgRows);
 				png_write_end(png_ptr, info_ptr);
@@ -65,33 +78,53 @@ namespace hTC {
 					imgRows = NULL;
 				}
 				png_destroy_write_struct(&png_ptr, &info_ptr);
+#ifdef WIN32
 				return ENCODE_ERROR_NO::ENCODE_OK;
+#else
+				return ENCODE_OK;
+#endif
 		}
 
 		const PNGCodec::ENCODE_ERROR_NO PNGCodec::readPNGFromPath(
-			__out PNGBuffer &dest_buffer,
-			__out png_uint_32 &o_width,
-			__out png_uint_32 &o_height,
-			__in const char *path
+			 PNGBuffer &dest_buffer,
+			 png_uint_32 &o_width,
+			 png_uint_32 &o_height,
+			 const char *path
 			) const {
 				FILE *fp = NULL;
 
+#ifdef WIN32
 				if (0 != fopen_s(&fp, path, "rb")) {
 					fprintf(stderr, "can't open %s\n", path);
 					return ENCODE_ERROR_NO::FAILED_TO_OPEN_FILE;
 				}
+#else
+				fp = fopen(path, "rb");
+				if (NULL == fp){
+					return FAILED_TO_OPEN_FILE;
+				}
+#endif
+
 
 				png_structp png_ptr = png_create_read_struct(
 					PNG_LIBPNG_VER_STRING,
 					NULL, NULL, NULL
 					);
 
+#ifdef WIN32
 				if (NULL == png_ptr) return ENCODE_ERROR_NO::FAILED_TO_CREATE_PNG_STRUCTURE;
+#else
+				if (NULL == png_ptr) return FAILED_TO_CREATE_PNG_STRUCTURE;
+#endif
 				png_infop info_ptr = png_create_info_struct(png_ptr);
 
 				if (NULL == info_ptr) {
 					png_destroy_read_struct(&png_ptr, NULL, NULL);
+#ifdef WIN32
 					return ENCODE_ERROR_NO::FAILED_TO_CREATE_PNG_INFO_STRUCTURE;
+#else
+					return FAILED_TO_CREATE_PNG_INFO_STRUCTURE;
+#endif
 				}
 				png_init_io(png_ptr, fp);
 				png_read_info(png_ptr, info_ptr);
@@ -100,7 +133,11 @@ namespace hTC {
 				png_size_t rowBytes = png_get_rowbytes(png_ptr,info_ptr);
 				png_bytepp image = new png_bytep[height];
 				if (image==NULL) {
+#ifdef WIN32
 					return ENCODE_ERROR_NO::FAILED_TO_ALLOCAT_MEMORY;
+#else
+					return FAILED_TO_ALLOCAT_MEMORY;
+#endif
 				}
 
 				o_width = png_get_image_width(png_ptr, info_ptr);
@@ -121,8 +158,12 @@ namespace hTC {
 							if (image[i]!=NULL)  delete [] image[i];
 						}
 						if (image != NULL) { delete [] image; }
-					}					
+					}
+#ifdef WIN32
 					return ENCODE_ERROR_NO::FAILED_TO_ALLOCAT_MEMORY;
+#else
+					return FAILED_TO_ALLOCAT_MEMORY;
+#endif
 				}
 
 
@@ -147,10 +188,14 @@ namespace hTC {
 					delete[] image;
 					image = NULL;
 				}
+#ifdef WIN32
 				return ENCODE_ERROR_NO::ENCODE_OK;
+#else
+				return ENCODE_OK;
+#endif
 		}
 
-		const bool PNGCodec::writePNGToPath(__in const char *path) const {
+		const bool PNGCodec::writePNGToPath( const char *path) const {
 			const int image_height = 5;	/* Number of rows in image */
 			const int image_width = 5;	/* Number of columns in image */
 			png_bytep image = new  png_byte[image_height * image_width * 4];
@@ -170,7 +215,12 @@ namespace hTC {
 			this->encode(destBuffer, srcBuffer, image_width, image_height);
 			FILE *fp = NULL;
 
+#ifdef WIN32
 			if (0 != fopen_s(&fp, path, "wb")) {
+#else
+			fp = fopen(path, "wb");
+			if ( NULL == fp ) {
+#endif
 				fprintf(stderr, "can't open %s\n", path);
 				return false;
 			}
@@ -184,9 +234,9 @@ namespace hTC {
 			return true;
 		}
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region Private Members
+//#pragma region Private Members
 
 		void PNGCodec::appendPNGBuffer(png_structp png_ptr, png_bytep data, png_size_t length) {
 			PNGBuffer *bufferPtr = reinterpret_cast<PNGBuffer*>(png_ptr->io_ptr);
@@ -197,7 +247,7 @@ namespace hTC {
 			UNREFERENCED_PARAMETER(png_ptr);
 		}
 
-#pragma endregion
+//#pragma endregion
 
 	} // Composer
 } // hTC

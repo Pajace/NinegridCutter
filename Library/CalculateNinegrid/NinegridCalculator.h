@@ -11,7 +11,7 @@ namespace hTC { namespace Image { namespace Ninegrid {
 	class NinegridCalculator
 	{
 	public:
-		NinegridCalculator(void);
+		NinegridCalculator();
 		~NinegridCalculator(void);
 
 		bool RunCalculaterAndOutpuInfo();

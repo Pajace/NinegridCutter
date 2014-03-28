@@ -19,7 +19,7 @@ namespace hTC {
 			this->detroy();
 		}
 
-#pragma region Public Members
+//#pragma region Public Members
 
 		const bool PNGBuffer::append(const png_bytep content, const png_size_t content_size, int failedTestIndex) {
 
@@ -30,7 +30,9 @@ namespace hTC {
 			if (NULL == content) return false;
 			png_size_t bufferSize = this->size();
 			png_size_t neededSpace = bufferSize + content_size;
+#ifdef WIN32
 			errno_t err = 0;
+#endif
 
 			if (neededSpace > this->mAllocatedBytes) {
 				png_bytep backup = NULL;
@@ -40,14 +42,18 @@ namespace hTC {
 					if (backup==NULL) {  
 						return false; 
 					}
-
+#ifdef WIN32
 					err = memcpy_s(backup, bufferSize, this->mContent, bufferSize);
-
 					if (0 != err) {
 						delete[] backup;
 						backup = NULL;
 						return false;
 					}
+#else
+					memcpy(backup, this->mContent, bufferSize);
+#endif
+
+
 					delete[] this->mContent;
 				}
 
@@ -63,16 +69,24 @@ namespace hTC {
 				this->mAllocatedBytes = neededSpace;
 
 				if (0 < bufferSize) {
+#ifdef WIN32
 					err = memcpy_s(this->mContent, neededSpace, backup, bufferSize);
+#else
+					memcpy(this->mContent, backup, bufferSize);
+#endif
 					delete[] backup;
 					backup = NULL;
-
+#ifdef WIN32
 					if (0 != err) return false;
+#endif
 				}
 			}
+#ifdef WIN32
 			err = memcpy_s(this->mContent + bufferSize, this->mAllocatedBytes - bufferSize, content, content_size);
-
 			if (0 != err) return false;
+#else
+			memcpy(this->mContent+bufferSize, content, content_size);
+#endif
 			this->mContentBytes = neededSpace;
 			return true;
 		}
@@ -116,9 +130,9 @@ namespace hTC {
 				return NULL;
 			}
 		}
-#pragma endregion
+//#pragma endregion
 
-#pragma region Private Members
+//#pragma region Private Members
 
 		void PNGBuffer::detroy(void) {
 
@@ -129,7 +143,7 @@ namespace hTC {
 			this->mContent = NULL;
 			this->mContentBytes = 0;
 		}
-#pragma endregion
+//#pragma endregion
 
 	} // apollo
 } // hTC
