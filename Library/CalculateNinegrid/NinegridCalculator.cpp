@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 #ifdef WIN32
 	#include <direct.h>
@@ -25,36 +26,58 @@ NinegridCalculator::~NinegridCalculator(void){
 	delete this->_pimpl;
 }
 
+// private method
+bool NinegridCalculator::createFolder(string folderPath){
+	int isCreated = -1;
+	bool result =false;
+#ifdef WIN32
+	isCreated = _mkdir(folderPath.c_str());	
+#else
+	isCreated = mkdir(folderPath.c_str(), S_IRWXO | S_IRWXG | S_IRWXU);
+#endif
+
+	return (isCreated==0);
+}
+
+vector<string> NinegridCalculator::get9GridPngFileList() {
+	return this->_pimpl->GetPngFileListAtFolder("*.9.png");
+}
+
+std::string NinegridCalculator::getSecondayBaseFileName(std::string filename) {
+	string firstBaseFileName( this->_pimpl->GetBaseFileName(filename) );
+	string secondaryBaseFileName( this->_pimpl->GetBaseFileName(firstBaseFileName) );
+	return secondaryBaseFileName;
+}
+// private method
+
+
+
 bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 	string outputFolder("output");
-#ifdef WIN32
-	_mkdir(outputFolder.c_str());
-#else
-	int isCreated = mkdir(outputFolder.c_str(), S_IRWXO | S_IRWXG | S_IRWXU);
-	cout << "Create folder [" << outputFolder << "]...  " ;
-	if (isCreated== 0) cout << " [Success]" << endl;
-	else cout << " [Failed]" << endl;
-#endif
 
-	cout << "Scan PNG images...." << endl;
-	cout << "  ===================================================== " << endl;
-	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
-	cout << "  ===================================================== [Finish]" << endl;
+	bool isCreated = this->createFolder(outputFolder);
+	if (isCreated==false){
+		cerr << "Create folder failed. - " << outputFolder <<  endl;
+		cerr << "Please remove the exist file or folder that the same name with \"" << outputFolder << "\"" << endl;
+		return false;
+	}
+
+	//cout << "Scan PNG images...." << endl;
+	//cout << "  ===================================================== " << endl;
+	vector<string> pngFileList = this->get9GridPngFileList();
+	//cout << "  ===================================================== [Finish]" << endl;
 
 	string outputTextFile = string(outputFolder);
-#ifdef WIN32
-	outputTextFile.append("\\PNGImageInformation.txt");
-#else
-	outputTextFile.append("/PNGImageInformation.txt");
-#endif
+	outputTextFile.append(FOLDER_SEPARATOR);
+	outputTextFile.append("PNGImageInformation.txt");
 	ofstream outputText( outputTextFile.c_str(), ios::out);
 
 	if (outputText.is_open() == false){
-		std::cerr << "Can not open output/PNGImageInformation.txt" << endl;
+		//std::cerr << "Can not open output" << FOLDER_SEPARATOR << "PNGImageInformation.txt" << endl;
 		return false;
-	} else{
-		cout << "Create output file: output/PNGImageInformation.txt";
-	}
+	} /*else{
+		cout << "Create output file: output" << FOLDER_SEPARATOR << "PNGImageInformation.txt";
+	}*/
 
 	if (pngFileList.size() == 0){
 		outputText << "No PNG file in this folder." << endl;
@@ -77,11 +100,9 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 
 		this->_pimpl->CalculateNineGridInfo(imageRawBuffer, imageSize, nineGridInfo);
 		this->_pimpl->CalculateImageSizeWithoutNineGridInfo(imageSize, imageSizeWithout9GridInfo);
-#ifdef WIN32
-		this->_pimpl->SaveImageWithout9GridInfo(this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".trim.png", imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
-#else
-		this->_pimpl->SaveImageWithout9GridInfo(this->_pimpl->GetBaseFileName( outputFolder + "/" + pngFileList.at(index))+".trim.png", imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
-#endif
+
+		this->_pimpl->SaveImageWithout9GridInfo(this->getSecondayBaseFileName(outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".png",  imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
+
 		outputText << pngFileList.at(index) << endl;
 		outputText << "--------------------------------------" << endl;
 		outputText << "NineGrid=\"left,top,right,bottom\" => NineGrid=\"" << //NineGrid="left,top,right,bottom"
@@ -99,12 +120,23 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 	return true;
 }
 
-bool NinegridCalculator::RunSplitImageWith3H(){
-	string outputFolder("output-3H");
-	_mkdir(outputFolder.c_str());
+bool NinegridCalculator::RunSplitImageWith3V(){
+	string outputFolder("output-3V");
 
-	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
-	ofstream outputText( outputFolder + "\\Split3HImage.log", ios::out);
+	bool isCreated = createFolder(outputFolder);
+	if (isCreated==false){
+		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		cerr << "Please remove the exist file or folder that the same name with \"" << outputFolder << "\"" << endl;
+		return false;
+	}
+
+	vector<string> pngFileList = this->get9GridPngFileList();
+
+	string outputFolderFile(outputFolder.c_str());
+	outputFolderFile.append(FOLDER_SEPARATOR);
+	outputFolderFile.append("Split3HImage.log");
+
+	ofstream outputText( outputFolderFile.c_str(), ios::out);
 	if (outputText.is_open() == false){		
 		return false;
 	}
@@ -150,21 +182,21 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 		splitImageSize.width = imageSizeWithout9GridInfo.width;
 		splitImageSize.heigh = nineGridInfo.Top;
 		splitImageSize.dataSize = bufferSizeIn3H.at(0);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".top.png", bufferIn3H.at(0), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".01.png", bufferIn3H.at(0), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 		
 		splitImageSize.width = imageSizeWithout9GridInfo.width;
 		splitImageSize.heigh = imageSizeWithout9GridInfo.heigh - nineGridInfo.Top - nineGridInfo.Bottom;
 		splitImageSize.dataSize = bufferSizeIn3H.at(1);
 
-		string fileName = this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle.png";
+		string fileName = this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".02.png";
 		isSuccess = this->_pimpl->SaveRawBufToPngFormat( fileName, bufferIn3H.at(1), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 		
 		splitImageSize.width = imageSizeWithout9GridInfo.width;
 		splitImageSize.heigh = nineGridInfo.Bottom;
 		splitImageSize.dataSize = bufferSizeIn3H.at(2);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".bottom.png", bufferIn3H.at(2), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".03.png", bufferIn3H.at(2), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 		
 
@@ -176,12 +208,22 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 	return true;
 }
 
-bool NinegridCalculator::RunSplitImageWith3V(){
-	string outputFolder("output-3V");
-	_mkdir(outputFolder.c_str());
+bool NinegridCalculator::RunSplitImageWith3H(){
+	string outputFolder("output-3H");
+	
+	bool isCreated = createFolder(outputFolder);
+	if (isCreated==false){
+		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		cerr << "Please remove the exist file or folder that the same name with \"" << outputFolder << "\"" << endl;
+		return false;
+	}
 
-	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
-	ofstream outputText( outputFolder + "\\Split3VImage.log", ios::out);
+	vector<string> pngFileList = this->get9GridPngFileList();
+	string outputFolderFile(outputFolder.c_str());
+	outputFolderFile.append(FOLDER_SEPARATOR);
+	outputFolderFile.append("Split3VImage.log");
+
+	ofstream outputText( outputFolderFile.c_str(), ios::out);
 	if (outputText.is_open() == false){		
 		return false;
 	}
@@ -228,21 +270,21 @@ bool NinegridCalculator::RunSplitImageWith3V(){
 		splitImageSize.width = nineGridInfo.Left;
 		splitImageSize.heigh = imageSizeWithout9GridInfo.heigh;
 		splitImageSize.dataSize = bufferSizeIn3V.at(0);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".left.png", bufferIn3V.at(0), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".01.png", bufferIn3V.at(0), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = imageSizeWithout9GridInfo.width - nineGridInfo.Left - nineGridInfo.Rright;
 		splitImageSize.heigh = imageSizeWithout9GridInfo.heigh;
 		splitImageSize.dataSize = bufferSizeIn3V.at(1);
 
-		string fileName = this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle.png";
+		string fileName = this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".02.png";
 		isSuccess = this->_pimpl->SaveRawBufToPngFormat( fileName, bufferIn3V.at(1), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = nineGridInfo.Rright;
 		splitImageSize.heigh = imageSizeWithout9GridInfo.heigh;
 		splitImageSize.dataSize = bufferSizeIn3V.at(2);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".right.png", bufferIn3V.at(2), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".03.png", bufferIn3V.at(2), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 
@@ -256,10 +298,20 @@ bool NinegridCalculator::RunSplitImageWith3V(){
 
 bool NinegridCalculator::RunSplitImageWith9Grid(){
 	string outputFolder("output-9Grid");
-	_mkdir(outputFolder.c_str());
+	
+	bool isCreated = createFolder(outputFolder);
+	if (isCreated==false){
+		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		cerr << "Please remove the exist file or folder that the same name with \"" << outputFolder << "\"" << endl;
+		return false;
+	}
 
-	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
-	ofstream outputText( outputFolder + "\\Split9GridImage.log", ios::out);
+	vector<string> pngFileList = this->get9GridPngFileList();
+
+	string outputFolderFile(outputFolder.c_str());
+	outputFolderFile.append(FOLDER_SEPARATOR);
+	outputFolderFile.append("Split9GridImage.log");
+	ofstream outputText( outputFolderFile.c_str(), ios::out);
 	if (outputText.is_open() == false){		
 		return false;
 	}
@@ -317,55 +369,55 @@ bool NinegridCalculator::RunSplitImageWith9Grid(){
 		splitImageSize.width = left_width;
 		splitImageSize.heigh = top_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(0);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".left-top.png", bufferIn9Grid.at(0), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".01.png", bufferIn9Grid.at(0), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = mid_width;
 		splitImageSize.heigh = top_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(1);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle-top.png", bufferIn9Grid.at(1), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".02.png", bufferIn9Grid.at(1), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = right_width;
 		splitImageSize.heigh = top_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(2);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".right-top.png", bufferIn9Grid.at(2), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".03.png", bufferIn9Grid.at(2), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = left_width;
 		splitImageSize.heigh = mid_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(3);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle-left.png", bufferIn9Grid.at(3), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".04.png", bufferIn9Grid.at(3), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = mid_width;
 		splitImageSize.heigh = mid_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(4);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle-middle.png", bufferIn9Grid.at(4), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".05.png", bufferIn9Grid.at(4), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = right_width;
 		splitImageSize.heigh = mid_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(5);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".middle-right.png", bufferIn9Grid.at(5), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".06.png", bufferIn9Grid.at(5), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = left_width;
 		splitImageSize.heigh = bottom_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(6);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".bottom-left.png", bufferIn9Grid.at(6), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".07.png", bufferIn9Grid.at(6), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = mid_width;
 		splitImageSize.heigh = bottom_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(7);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".bottom-middle.png", bufferIn9Grid.at(7), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".08.png", bufferIn9Grid.at(7), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 		splitImageSize.width = right_width;
 		splitImageSize.heigh = bottom_height;
 		splitImageSize.dataSize = bufferSizeIn9Grid.at(8);
-		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".bottom-right.png", bufferIn9Grid.at(8), splitImageSize );
+		isSuccess = this->_pimpl->SaveRawBufToPngFormat( this->getSecondayBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".09.png", bufferIn9Grid.at(8), splitImageSize );
 		if (!isSuccess) outputText << "Save PNG raw buffer to PNG format failed." << endl;
 
 

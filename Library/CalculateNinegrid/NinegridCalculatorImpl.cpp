@@ -18,6 +18,7 @@ using namespace hTC::Image::Ninegrid;
 using namespace std;
 using namespace hTC::ComposerLib;
 
+
 NinegridCalculatorImpl::NinegridCalculatorImpl(){
 }
 
@@ -138,7 +139,7 @@ bool NinegridCalculatorImpl::CalculateNineGridInfo(BYTE *imgRawBuf, ImageSize &i
 }
 
 // __out ImageSize &newImgBufSize
-bool NinegridCalculatorImpl::CalculateImageSizeWithoutNineGridInfo(ImageSize srcImgRawBufSize,  __out ImageSize &newImgBufSize) {
+bool NinegridCalculatorImpl::CalculateImageSizeWithoutNineGridInfo(ImageSize srcImgRawBufSize,    ImageSize &newImgBufSize) {
 	const size_t BGRA_BYTE = 4;
 
 	// calculate new size
@@ -150,7 +151,7 @@ bool NinegridCalculatorImpl::CalculateImageSizeWithoutNineGridInfo(ImageSize src
 	return true;
 }
 
-bool NinegridCalculatorImpl::Trim9GridInfo(BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize, ImageSize newImgRawBufSizeWithout9GridInfo, __out BYTE **newImageBufferWithout9GridInfo) {
+bool NinegridCalculatorImpl::Trim9GridInfo(BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize, ImageSize newImgRawBufSizeWithout9GridInfo,  BYTE **newImageBufferWithout9GridInfo) {
 	const size_t BGRA_BYTE = 4;
 
 	*newImageBufferWithout9GridInfo = new BYTE[newImgRawBufSizeWithout9GridInfo.dataSize];
@@ -223,7 +224,7 @@ bool NinegridCalculatorImpl::SaveImageWithout9GridInfo(const string& fileName, B
 
 bool NinegridCalculatorImpl::SaveRawBufToPngFormat(const std::string& fileName, BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize){
 
-	ofstream outfile(fileName, ios::binary);
+	ofstream outfile(fileName.c_str(), ios::binary);
 
 	bool result = false;
 	if (outfile.is_open()){

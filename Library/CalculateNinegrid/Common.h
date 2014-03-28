@@ -20,6 +20,14 @@ namespace hTC { namespace Image { namespace Ninegrid {
 		long Top;
 		long Bottom;
 	};
+
+#ifdef WIN32
+#define FOLDER_SEPARATOR  "\\"
+#else
+#define FOLDER_SEPARATOR  "/"
+#endif // !WIN32
+
+
 }}}
 
 #endif // HTC_IMAGE_NINEGRID_COMMON_H_
