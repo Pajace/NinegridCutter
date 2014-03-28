@@ -73,11 +73,11 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 	ofstream outputText( outputTextFile.c_str(), ios::out);
 
 	if (outputText.is_open() == false){
-		std::cerr << "Can not open output" << FOLDER_SEPARATOR << "PNGImageInformation.txt" << endl;
+		//std::cerr << "Can not open output" << FOLDER_SEPARATOR << "PNGImageInformation.txt" << endl;
 		return false;
-	} else{
+	} /*else{
 		cout << "Create output file: output" << FOLDER_SEPARATOR << "PNGImageInformation.txt";
-	}
+	}*/
 
 	if (pngFileList.size() == 0){
 		outputText << "No PNG file in this folder." << endl;

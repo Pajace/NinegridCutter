@@ -23,6 +23,14 @@ string GetCurrentFolderPath() {
 	return result;
 }
 
+void printSuccessOrFailMessage(bool isSuccess) {
+	if (isSuccess) {
+		cout << " [Success]" << endl;
+	} else {
+		cerr << " [Fail]" << endl;
+	}
+}
+
 int main(int argc, char* argv[]){
 
 #ifndef WIN32
@@ -41,33 +49,21 @@ int main(int argc, char* argv[]){
 	cout << "Running...." << endl;
 
 	cout << endl;
+	cout << "1) trim image: ";
 	bool isSuccess = c->RunCalculaterAndOutpuInfo();
-	if (isSuccess) {
-		cout << endl << "1) trim image [Success]" << endl;
-	} else {
-		cerr << "1) trim image [Fail]" << endl;
-	}
+	printSuccessOrFailMessage(isSuccess);
 
+	cout << "2) Split images - vertical part: ";
 	isSuccess = c->RunSplitImageWith3H();
-	if (isSuccess) {
-		cout << "2) Split images - vertical part. [Success]" << endl;
-	} else {
-		cerr << "2) Split images - vertical part. [Fail]" << endl;
-	}
+	printSuccessOrFailMessage(isSuccess);
 
+	cout << "3) Split images - horizontal: ";
 	isSuccess = c->RunSplitImageWith3V();
-	if (isSuccess) {
-		cout << "3) Split images - horizontal. [Success]" << endl;
-	} else {
-		cerr << "3)Split images - horizontal. [Fail]" << endl;
-	}
+	printSuccessOrFailMessage(isSuccess);
 
+	cout << "4) Split images - 9 part: ";
 	isSuccess = c->RunSplitImageWith9Grid();
-	if (isSuccess) {
-		cout << "4) Split images - 9 part [Success]" << endl;
-	} else {
-		cerr << "4) Split images - 9 part. [Fail]" << endl;
-	}
+	printSuccessOrFailMessage(isSuccess);
 
 	system("Pause");
 	delete c;	
