@@ -29,8 +29,9 @@ NinegridCalculator::~NinegridCalculator(void){
 // private method
 bool NinegridCalculator::createFolder(string folderPath){
 	int isCreated = -1;
+	bool result =false;
 #ifdef WIN32
-	isCreated = _mkdir(folderPath.c_str());
+	isCreated = _mkdir(folderPath.c_str());	
 #else
 	isCreated = mkdir(folderPath.c_str(), S_IRWXO | S_IRWXG | S_IRWXU);
 #endif
@@ -57,6 +58,7 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 	bool isCreated = this->createFolder(outputFolder);
 	if (isCreated==false){
 		cerr << "Create folder failed. - " << outputFolder <<  endl;
+		cerr << "Please remove the exist file or folder that the same name with \"" << outputFolder << "\"" << endl;
 		return false;
 	}
 
@@ -125,6 +127,7 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 	bool isCreated = createFolder(outputFolder);
 	if (isCreated==false){
 		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		cerr << "Please remove the exist file or folder that the same name with \"" << outputFolder << "\"" << endl;
 		return false;
 	}
 
@@ -212,6 +215,7 @@ bool NinegridCalculator::RunSplitImageWith3V(){
 	bool isCreated = createFolder(outputFolder);
 	if (isCreated==false){
 		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		cerr << "Please remove the exist file or folder that the same name with \"" << outputFolder << "\"" << endl;
 		return false;
 	}
 
@@ -299,6 +303,7 @@ bool NinegridCalculator::RunSplitImageWith9Grid(){
 	bool isCreated = createFolder(outputFolder);
 	if (isCreated==false){
 		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		cerr << "Please remove the exist file or folder that the same name with \"" << outputFolder << "\"" << endl;
 		return false;
 	}
 
