@@ -38,23 +38,23 @@ int main(int argc, char* argv[]){
 
 	isSuccess = c->RunSplitImageWith3H();
 	if (isSuccess) {
-		cout << "[Finish]" << endl;
+		cout << "Split images into 3 horizontal part. [Finish]" << endl;
 	} else {
-		cerr << "[Fail]" << endl;
+		cerr << "Split images into 3 horizontal part. [Fail]" << endl;
 	}
 
 	isSuccess = c->RunSplitImageWith3V();
 	if (isSuccess) {
-		cout << "[Finish]" << endl;
+		cout << "Split images into 3 vertical part. [Finish]" << endl;
 	} else {
-		cerr << "[Fail]" << endl;
+		cerr << "Split images into 3 vertical part. [Fail]" << endl;
 	}
 
 	isSuccess = c->RunSplitImageWith9Grid();
 	if (isSuccess) {
-		cout << "[Finish]" << endl;
+		cout << "Split images into 9 grid part. [Finish]" << endl;
 	} else {
-		cerr << "[Fail]" << endl;
+		cerr << "Split images into 9 grid part. [Fail]" << endl;
 	}
 
 	system("Pause");
@@ -80,6 +80,27 @@ int main(int argc, char* argv[]){
 		cout << endl <<  "Convert Finish!" << endl;
 	} else {
 		cerr << endl << "Convert Fail." << endl;
+	}
+
+	isSuccess = c->RunSplitImageWith3H();
+	if (isSuccess) {
+		cout << "Split images into 3 horizontal part. [Finish]" << endl;
+	} else {
+		cerr << "Split images into 3 horizontal part. [Fail]" << endl;
+	}
+
+	isSuccess = c->RunSplitImageWith3V();
+	if (isSuccess) {
+		cout << "Split images into 3 vertical part. [Finish]" << endl;
+	} else {
+		cerr << "Split images into 3 vertical part. [Fail]" << endl;
+	}
+
+	isSuccess = c->RunSplitImageWith9Grid();
+	if (isSuccess) {
+		cout << "Split images into 9 grid part. [Finish]" << endl;
+	} else {
+		cerr << "Split images into 9 grid part. [Fail]" << endl;
 	}
 #endif
 }

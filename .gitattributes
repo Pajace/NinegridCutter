@@ -71,7 +71,6 @@ Library/zlib127/zlib127.vcxproj.filters -text
 Library/zlib127/zutil.c -text
 Library/zlib127/zutil.h -text
 /NinegridConverter.sln -text
-/NinegridConverter.v11.suo -text
 Unittest/NinegridCalculator_Unittest/NinegridCalculatorImpl_Unittest.cpp -text
 Unittest/NinegridCalculator_Unittest/NinegridCalculator_Unittest.vcxproj -text
 Unittest/NinegridCalculator_Unittest/NinegridCalculator_Unittest.vcxproj.filters -text
