@@ -18,6 +18,18 @@ using namespace hTC::Image::Ninegrid;
 using namespace std;
 using namespace hTC::ComposerLib;
 
+#ifdef WIN32
+#define PNG_ERROR_CODE PNGCodec::ENCODE_ERROR_NO
+#else
+#define PNG_ERROR_CODE ENCODE_ERROR_NO
+#endif
+
+#ifdef WIN32
+#define PNG_ENCODE_SUCCESS PNGCodec::ENCODE_OK
+#else
+#define PNG_ENCODE_SUCCESS ENCODE_OK
+#endif
+
 NinegridCalculatorImpl::NinegridCalculatorImpl(){
 }
 
@@ -32,8 +44,8 @@ bool NinegridCalculatorImpl::GetPngRawBuffer(const std::string& fileName, BYTE *
 	unsigned long height = 0;
 
 
-	PNGCodec::ENCODE_ERROR_NO errNo = pngcodec.readPNGFromPath(destBuffer, width, height, fileName.c_str());
-	if (errNo != PNGCodec::ENCODE_OK) {
+	PNG_ERROR_CODE errNo = pngcodec.readPNGFromPath(destBuffer, width, height, fileName.c_str());
+	if (errNo != PNG_ENCODE_SUCCESS) {
 		cerr << "[GetPngRawBuffer][Fatal] Decode PNG file failed."<< endl;
 		return false;
 	}
@@ -205,8 +217,8 @@ bool NinegridCalculatorImpl::SaveImageWithout9GridInfo(const string& fileName, B
 		PNGCodec pngcodec;
 
 		srcPNGRawBuffer.wrap(imageBufferWithout9GridInfo, newImgRawBufSizeWithout9GridInfo.dataSize);
-		PNGCodec::ENCODE_ERROR_NO errNo = pngcodec.encode(dstPNGEncodedBuffer, srcPNGRawBuffer, newImgRawBufSizeWithout9GridInfo.width, newImgRawBufSizeWithout9GridInfo.heigh);
-		if (errNo != PNGCodec::ENCODE_OK){
+		PNG_ERROR_CODE errNo = pngcodec.encode(dstPNGEncodedBuffer, srcPNGRawBuffer, newImgRawBufSizeWithout9GridInfo.width, newImgRawBufSizeWithout9GridInfo.heigh);
+		if (errNo != PNG_ENCODE_SUCCESS){
 		} else{
 			outfile.write((char*)dstPNGEncodedBuffer.toPNGBytes(), dstPNGEncodedBuffer.size());
 		}
@@ -232,8 +244,8 @@ bool NinegridCalculatorImpl::SaveRawBufToPngFormat(const std::string& fileName, 
 		PNGCodec pngcodec;
 
 		srcPNGRawBuffer.wrap(srcImgRawBuf, srcImgRawBufSize.dataSize);
-		PNGCodec::ENCODE_ERROR_NO errorNo = pngcodec.encode(dstPNGEncodedBuffer, srcPNGRawBuffer, srcImgRawBufSize.width, srcImgRawBufSize.heigh);
-		if (errorNo != PNGCodec::ENCODE_OK){
+		PNG_ERROR_CODE errorNo = pngcodec.encode(dstPNGEncodedBuffer, srcPNGRawBuffer, srcImgRawBufSize.width, srcImgRawBufSize.heigh);
+		if (errorNo != PNG_ENCODE_SUCCESS){
 			result = false;
 		} else {			
 			outfile.write((char*)dstPNGEncodedBuffer.toPNGBytes(), dstPNGEncodedBuffer.size());

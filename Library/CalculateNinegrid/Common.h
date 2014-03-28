@@ -27,12 +27,6 @@ namespace hTC { namespace Image { namespace Ninegrid {
 #define FOLDER_SEPARATOR  "/"
 #endif // !WIN32
 
-#ifdef WIN32
-	#define ENCODE_ERROR_NO PNGCodec::ENCODE_ERROR_NO
-#else
-	#define ENCODE_ERROR_NO ENCODE_ERROR_NO
-#endif // !WIN32
-
 
 }}}
 
