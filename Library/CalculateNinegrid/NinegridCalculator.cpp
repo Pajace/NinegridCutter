@@ -37,6 +37,10 @@ bool NinegridCalculator::createFolder(string folderPath){
 
 	return (isCreated==0);
 }
+
+vector<string> NinegridCalculator::get9GridPngFileList() {
+	return this->_pimpl->GetPngFileListAtFolder("*.9.png");
+}
 // private method
 
 
@@ -52,7 +56,7 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 
 	cout << "Scan PNG images...." << endl;
 	cout << "  ===================================================== " << endl;
-	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
+	vector<string> pngFileList = this->get9GridPngFileList();
 	cout << "  ===================================================== [Finish]" << endl;
 
 	string outputTextFile = string(outputFolder);
@@ -120,7 +124,8 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 		return false;
 	}
 
-	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
+	vector<string> pngFileList = this->get9GridPngFileList();
+
 	string outputFolderFile(outputFolder.c_str());
 	outputFolderFile.append(FOLDER_SEPARATOR);
 	outputFolderFile.append("Split3HImage.log");
@@ -206,7 +211,7 @@ bool NinegridCalculator::RunSplitImageWith3V(){
 		return false;
 	}
 
-	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
+	vector<string> pngFileList = this->get9GridPngFileList();
 	string outputFolderFile(outputFolder.c_str());
 	outputFolderFile.append(FOLDER_SEPARATOR);
 	outputFolderFile.append("Split3VImage.log");
@@ -293,7 +298,7 @@ bool NinegridCalculator::RunSplitImageWith9Grid(){
 		return false;
 	}
 
-	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
+	vector<string> pngFileList = this->get9GridPngFileList();
 
 	string outputFolderFile(outputFolder.c_str());
 	outputFolderFile.append(FOLDER_SEPARATOR);

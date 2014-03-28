@@ -2,6 +2,7 @@
 #define HTC_IMAGE_NINEGRID_NINEGRIDCALCULATOR_H_
 
 #include <string>
+#include <vector>
 #include "Common.h"
 
 namespace hTC { namespace Image { namespace Ninegrid {
@@ -23,6 +24,7 @@ namespace hTC { namespace Image { namespace Ninegrid {
 		NinegridCalculatorImpl *_pimpl;
 
 		bool createFolder(std::string folderPath);
+		std::vector<std::string> get9GridPngFileList();
 
 	};
 
