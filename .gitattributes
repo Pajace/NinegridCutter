@@ -1,4 +1,6 @@
 * text=auto !eol
+/.cproject -text
+/.project -text
 Application/Main/Main.vcxproj -text
 Application/Main/Main.vcxproj.filters -text
 Application/Main/NinegridCalculator.aps -text
