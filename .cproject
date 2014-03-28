@@ -35,7 +35,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.796993778" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug">
 								<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.1386048211" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.1950458426" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.include.paths.1954790680" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+								<option id="gnu.cpp.compiler.option.include.paths.1954790680" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NinegridConverter/Library/CalculateNinegrid}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NinegridConverter/Library/libpng1250}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/NinegridConverter/Library/zlib127}&quot;"/>
@@ -50,10 +50,10 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Application/Main"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Library/CalculateNinegrid"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Library/libpng1250"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Library/zlib127"/>
+						<entry excluding="Main.vcxproj|Main.vcxproj.filters|NinegridCalculator.aps|NinegridCalculator.rc|resource.h" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Application/Main"/>
+						<entry excluding="CalculateNinegrid.vcxproj|CalculateNinegrid.vcxproj.filters|CalculateNinegrid.vcxproj.user" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Library/CalculateNinegrid"/>
+						<entry excluding="libpng1250.vcxproj|libpng1250.vcxproj.filters|libpng1250.vcxproj.user" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Library/libpng1250"/>
+						<entry excluding="zlib127.vcxproj|zlib127.vcxproj.filters" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Library/zlib127"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
