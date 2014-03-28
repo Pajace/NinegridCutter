@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 #ifdef WIN32
 	#include <direct.h>
@@ -25,16 +26,29 @@ NinegridCalculator::~NinegridCalculator(void){
 	delete this->_pimpl;
 }
 
+// private method
+bool NinegridCalculator::createFolder(string folderPath){
+	int isCreated = -1;
+#ifdef WIN32
+	isCreated = _mkdir(folderPath.c_str());
+#else
+	isCreated = mkdir(folderPath.c_str(), S_IRWXO | S_IRWXG | S_IRWXU);
+#endif
+
+	return (isCreated==0);
+}
+// private method
+
+
+
 bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 	string outputFolder("output");
-#ifdef WIN32
-	_mkdir(outputFolder.c_str());
-#else
-	int isCreated = mkdir(outputFolder.c_str(), S_IRWXO | S_IRWXG | S_IRWXU);
-	cout << "Create folder [" << outputFolder << "]...  " ;
-	if (isCreated== 0) cout << " [Success]" << endl;
-	else cout << " [Failed]" << endl;
-#endif
+
+	bool isCreated = this->createFolder(outputFolder);
+	if (isCreated==false){
+		cerr << "Create folder failed. - " << outputFolder <<  endl;
+		return false;
+	}
 
 	cout << "Scan PNG images...." << endl;
 	cout << "  ===================================================== " << endl;
@@ -42,18 +56,19 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 	cout << "  ===================================================== [Finish]" << endl;
 
 	string outputTextFile = string(outputFolder);
-#ifdef WIN32
-	outputTextFile.append("\\PNGImageInformation.txt");
-#else
-	outputTextFile.append("/PNGImageInformation.txt");
-#endif
+//#ifdef WIN32
+	outputTextFile.append(FOLDER_SEPARATOR);
+	outputTextFile.append("PNGImageInformation.txt");
+//#else
+//	outputTextFile.append("/PNGImageInformation.txt");
+//#endif
 	ofstream outputText( outputTextFile.c_str(), ios::out);
 
 	if (outputText.is_open() == false){
-		std::cerr << "Can not open output/PNGImageInformation.txt" << endl;
+		std::cerr << "Can not open output" << FOLDER_SEPARATOR << "PNGImageInformation.txt" << endl;
 		return false;
 	} else{
-		cout << "Create output file: output/PNGImageInformation.txt";
+		cout << "Create output file: output" << FOLDER_SEPARATOR << "PNGImageInformation.txt";
 	}
 
 	if (pngFileList.size() == 0){
@@ -77,11 +92,8 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 
 		this->_pimpl->CalculateNineGridInfo(imageRawBuffer, imageSize, nineGridInfo);
 		this->_pimpl->CalculateImageSizeWithoutNineGridInfo(imageSize, imageSizeWithout9GridInfo);
-#ifdef WIN32
-		this->_pimpl->SaveImageWithout9GridInfo(this->_pimpl->GetBaseFileName( outputFolder + "\\" + pngFileList.at(index))+".trim.png", imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
-#else
-		this->_pimpl->SaveImageWithout9GridInfo(this->_pimpl->GetBaseFileName( outputFolder + "/" + pngFileList.at(index))+".trim.png", imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
-#endif
+		this->_pimpl->SaveImageWithout9GridInfo(this->_pimpl->GetBaseFileName( outputFolder + FOLDER_SEPARATOR + pngFileList.at(index))+".trim.png", imageRawBuffer, imageSize, imageSizeWithout9GridInfo);
+
 		outputText << pngFileList.at(index) << endl;
 		outputText << "--------------------------------------" << endl;
 		outputText << "NineGrid=\"left,top,right,bottom\" => NineGrid=\"" << //NineGrid="left,top,right,bottom"

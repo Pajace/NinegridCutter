@@ -22,6 +22,8 @@ namespace hTC { namespace Image { namespace Ninegrid {
 	private:
 		NinegridCalculatorImpl *_pimpl;
 
+		bool createFolder(std::string folderPath);
+
 	};
 
 }}} // hTC::Image::Ninegrid
