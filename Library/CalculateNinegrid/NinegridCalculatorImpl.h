@@ -33,7 +33,8 @@ namespace hTC { namespace Image { namespace Ninegrid {
 		bool CalculateImageSizeWithoutNineGridInfo(ImageSize srcImgRawBufSize,  ImageSize &newImgBufSize);
 
 		bool SaveImageWithout9GridInfo(const std::string& fileName, BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize, ImageSize newImgRawBufSizeWithout9GridInfo);
-		bool Trim9GridInfo(BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize, ImageSize newImgRawBufSizeWithout9GridInfo, __out BYTE **newImageBufferWithout9GridInfo);
+		//__out BYTE **newImageBufferWithout9GridInfo
+		bool Trim9GridInfo(BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize, ImageSize newImgRawBufSizeWithout9GridInfo, BYTE **newImageBufferWithout9GridInfo);
 
 		// encode @srcImgRawBuf to png buffer and save to @fileName
 		bool SaveRawBufToPngFormat(const std::string& fileName, BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize);
