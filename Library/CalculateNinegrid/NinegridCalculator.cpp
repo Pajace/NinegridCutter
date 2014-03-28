@@ -113,7 +113,12 @@ bool NinegridCalculator::RunCalculaterAndOutpuInfo(){
 
 bool NinegridCalculator::RunSplitImageWith3H(){
 	string outputFolder("output-3H");
-	_mkdir(outputFolder.c_str());
+
+	bool isCreated = createFolder(outputFolder);
+	if (isCreated==false){
+		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		return false;
+	}
 
 	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
 	ofstream outputText( outputFolder + "\\Split3HImage.log", ios::out);
@@ -190,7 +195,12 @@ bool NinegridCalculator::RunSplitImageWith3H(){
 
 bool NinegridCalculator::RunSplitImageWith3V(){
 	string outputFolder("output-3V");
-	_mkdir(outputFolder.c_str());
+	
+	bool isCreated = createFolder(outputFolder);
+	if (isCreated==false){
+		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		return false;
+	}
 
 	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
 	ofstream outputText( outputFolder + "\\Split3VImage.log", ios::out);
@@ -268,7 +278,12 @@ bool NinegridCalculator::RunSplitImageWith3V(){
 
 bool NinegridCalculator::RunSplitImageWith9Grid(){
 	string outputFolder("output-9Grid");
-	_mkdir(outputFolder.c_str());
+	
+	bool isCreated = createFolder(outputFolder);
+	if (isCreated==false){
+		cerr << "Create folder - [" << outputFolder << "] failed." << endl;
+		return false;
+	}
 
 	vector<string> pngFileList = this->_pimpl->GetPngFileListAtFolder("*.png");
 	ofstream outputText( outputFolder + "\\Split9GridImage.log", ios::out);
