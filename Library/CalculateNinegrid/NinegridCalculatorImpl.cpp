@@ -224,7 +224,7 @@ bool NinegridCalculatorImpl::SaveImageWithout9GridInfo(const string& fileName, B
 
 bool NinegridCalculatorImpl::SaveRawBufToPngFormat(const std::string& fileName, BYTE *srcImgRawBuf, ImageSize &srcImgRawBufSize){
 
-	ofstream outfile(fileName, ios::binary);
+	ofstream outfile(fileName.c_str(), ios::binary);
 
 	bool result = false;
 	if (outfile.is_open()){
