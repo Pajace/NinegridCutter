@@ -38,34 +38,35 @@ int main(int argc, char* argv[]){
 #endif
 
 	NinegridCalculator *c = new NinegridCalculator();
-	cout << "Running...., please wait.....";
+	cout << "Running...." << endl;
 
+	cout << endl;
 	bool isSuccess = c->RunCalculaterAndOutpuInfo();
 	if (isSuccess) {
-		cout << "[Finish]" << endl;
+		cout << endl << "1) trim image [Success]" << endl;
 	} else {
-		cerr << "[Fail]" << endl;
+		cerr << "1) trim image [Fail]" << endl;
 	}
 
 	isSuccess = c->RunSplitImageWith3H();
 	if (isSuccess) {
-		cout << "Split images - vertical part. [Finish]" << endl;
+		cout << "2) Split images - vertical part. [Success]" << endl;
 	} else {
-		cerr << "Split images - vertical part. [Fail]" << endl;
+		cerr << "2) Split images - vertical part. [Fail]" << endl;
 	}
 
 	isSuccess = c->RunSplitImageWith3V();
 	if (isSuccess) {
-		cout << "Split images - horizontal. [Finish]" << endl;
+		cout << "3) Split images - horizontal. [Success]" << endl;
 	} else {
-		cerr << "Split images - horizontal. [Fail]" << endl;
+		cerr << "3)Split images - horizontal. [Fail]" << endl;
 	}
 
 	isSuccess = c->RunSplitImageWith9Grid();
 	if (isSuccess) {
-		cout << "Split images - 9 part [Finish]" << endl;
+		cout << "4) Split images - 9 part [Success]" << endl;
 	} else {
-		cerr << "Split images - 9 part. [Fail]" << endl;
+		cerr << "4) Split images - 9 part. [Fail]" << endl;
 	}
 
 	system("Pause");

@@ -25,6 +25,7 @@ namespace hTC { namespace Image { namespace Ninegrid {
 
 		bool createFolder(std::string folderPath);
 		std::vector<std::string> get9GridPngFileList();
+		std::string getSecondayBaseFileName(std::string filename);
 
 	};
 
