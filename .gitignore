@@ -1,0 +1,8 @@
+Application/Main/Debug
+/Debug
+Library/CalculateNinegrid/Debug
+Library/libpng1250/Debug
+Library/zlib127/Debug
+/NinegridConverter.opensdf
+/NinegridConverter.sdf
+Unittest/NinegridCalculator_Unittest/Debug
